@@ -1,17 +1,3 @@
-// import { useNavigation } from '@react-navigation/native';
-// import React from 'react';
-// import {Button, View, Text} from 'react-native';
-
-// export default function Dashboard() {
-//     const navigation = useNavigation()
-//   return (
-//     <View style={{flex: 1,alignContent: "center",alignSelf: "center", alignItems: "center" , justifyContent: "center"}}>
-//       <Text style={{ fontSize: 25}}>DASHBOARD</Text>
-//       <Button title="enviar" onPress={() => navigation.navigate("Home")} />
-//     </View>
-//   );
-// }
-
 //CRIAR NOTA
 
 /* eslint-disable react-native/no-inline-styles */
@@ -26,12 +12,11 @@ import {
   Keyboard,
   Alert,
   FlatList,
+  KeyboardAvoidingView,
 } from 'react-native';
 
 import {StackActions} from '@react-navigation/native';
-// const popAction = StackActions.pop(1);
-
-import Notas from '../Notas/Notas';
+import {useNavigation} from '@react-navigation/native';
 
 import Tarefa from '../../Components/Tarefa';
 
@@ -39,17 +24,16 @@ import Tags from 'react-native-tags';
 import DropDownPicker from 'react-native-dropdown-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import {useNavigation, Link} from '@react-navigation/native';
-
 export default function CriarNota() {
   const navigation = useNavigation();
-
   const popAction = StackActions.pop(1);
 
   const [nomeNota, setNomeNota] = useState('');
   const [descricao, setDescricao] = useState('');
   const [data, setData] = useState('');
   const [tag, setTag] = useState('');
+
+  const [notes, setNotes] = useState([]);
 
   //CHECKBOX TAREFA
   const [tarefa, setTarefa] = useState('');
@@ -73,10 +57,10 @@ export default function CriarNota() {
   const [open, setOpen] = useState(false);
   const [prioridade, setPrioridade] = useState(null);
   const [items, setItems] = useState([
-    {key: 1, label: 'Urgente', value: 'urgente'},
-    {key: 2, label: 'Alta', value: 'alta'},
-    {key: 3, label: 'Média', value: 'media'},
-    {key: 4, label: 'Baixa', value: 'baixa'},
+    {key: 1, label: 'Urgente', value: 'Urgente'},
+    {key: 2, label: 'Alta', value: 'Alta'},
+    {key: 3, label: 'Média', value: 'Média'},
+    {key: 4, label: 'Baixa', value: 'Baixa'},
   ]);
 
   //DROPDOWN COR
@@ -87,7 +71,7 @@ export default function CriarNota() {
     {
       key: 1,
       label: 'Básico',
-      value: 'basico',
+      value: 'Básico',
       containerStyle: {
         backgroundColor: '#F8F8F8',
       },
@@ -95,7 +79,7 @@ export default function CriarNota() {
     {
       key: 2,
       label: 'Rosa',
-      value: 'rosa',
+      value: 'Rosa',
       containerStyle: {
         backgroundColor: '#FFF3F3',
       },
@@ -103,7 +87,7 @@ export default function CriarNota() {
     {
       key: 3,
       label: 'Azul',
-      value: 'azul',
+      value: 'Azul',
       containerStyle: {
         backgroundColor: '#EAF1FF',
       },
@@ -111,7 +95,7 @@ export default function CriarNota() {
     {
       key: 4,
       label: 'Verde-água',
-      value: 'verde',
+      value: 'Verde-água',
       containerStyle: {
         backgroundColor: '#E4FFEF',
       },
@@ -119,21 +103,19 @@ export default function CriarNota() {
     ,
   ]);
 
-  const [notes, setNotes] = useState([]);
-
   //renderizar todas as notas quando a pagina abrir
   useEffect(() => {
     findNotes();
   }, [notes]);
 
   const findNotes = async () => {
-    const result = await AsyncStorage.getItem('@notas');
+    const result = await AsyncStorage.getItem('notas');
     if (result !== null) {
       setNotes(JSON.parse(result));
     }
   };
 
-  //async storage - salvar notas
+  //SALVAR NOTAS - ASYNC STORAGE
   async function storeData() {
     const dados = {
       id: Date.now(),
@@ -143,32 +125,28 @@ export default function CriarNota() {
       data: data,
       itemTarefa: itemTarefa,
       corTarefa: corTarefa,
-
       tag: tag,
     };
     const updateNotes = [...notes, dados];
     setNotes(updateNotes);
-    await AsyncStorage.setItem('@notas', JSON.stringify(updateNotes));
+    await AsyncStorage.setItem('notas', JSON.stringify(updateNotes));
 
     Alert.alert('Nota Cadastrada', 'Sua nota foi cadastrada com sucesso!');
-    navigation.dispatch(popAction);
+    navigation.dispatch(StackActions.popToTop());
   }
-
-  // //deletar nota
-  // async function deletarNota() {
-  //   await AsyncStorage.clear();
-  // }
 
   return (
     <View style={styles.container}>
-      <View style={{flex: 0.9, margin: 20}}>
-        <ScrollView nestedScrollEnabled={false}>
+      <ScrollView nestedScrollEnabled={false}>
+        <View style={{flex: 0.9, margin: 20}}>
           <Text style={{marginBottom: 500}}>
             <View>
               {/* ==================== INPUT - NOME DA NOTA ==================== */}
 
               <Text style={styles.inputLabel}>Nome da Nota (obrigatório)</Text>
               <TextInput
+                returnKeyType={'next'}
+                //returnKeyLabel={'next'}
                 style={styles.input}
                 onChangeText={text => setNomeNota(text)}
                 value={nomeNota}
@@ -348,21 +326,7 @@ export default function CriarNota() {
                       onPress={onPress}
                       deleteTagOnPress={true}>
                       <View>
-                        <Text
-                          style={{
-                            marginTop: 2,
-                            marginBottom: 2,
-
-                            marginLeft: 5,
-                            paddingVertical: 5,
-                            paddingHorizontal: 10,
-
-                            backgroundColor: '#e0e0e0',
-
-                            borderRadius: 50,
-                          }}>
-                          {tag}
-                        </Text>
+                        <Text style={styles.textoTag}>{tag}</Text>
                       </View>
                     </TouchableOpacity>
                   )}
@@ -370,8 +334,8 @@ export default function CriarNota() {
               </View>
             </View>
           </Text>
-        </ScrollView>
-      </View>
+        </View>
+      </ScrollView>
       <View style={{flex: 0.1}}>
         <View style={styles.container}>
           {nomeNota.trim().length > 0 ? (
@@ -544,5 +508,17 @@ const styles = StyleSheet.create({
     marginTop: 0,
     marginLeft: 15,
     marginBottom: 25,
+  },
+  textoTag: {
+    marginTop: 2,
+    marginBottom: 2,
+
+    marginLeft: 5,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+
+    backgroundColor: '#e0e0e0',
+
+    borderRadius: 50,
   },
 });

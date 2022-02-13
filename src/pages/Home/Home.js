@@ -40,7 +40,7 @@ export default function Home() {
   // buscar notas ===========================
 
   const findNotes = async () => {
-    const result = await AsyncStorage.getItem('@notas');
+    const result = await AsyncStorage.getItem('notas');
     if (result !== null) {
       setNotes(JSON.parse(result));
     }
