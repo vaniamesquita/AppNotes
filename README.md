@@ -14,6 +14,8 @@ Esse projeto/desafio foi desenvolvido como parte final do treinamento de React N
 
 ## Layout
 
+Layout do projeto a ser feito (figma)
+
 <img src="src/assets/projeto_figma.png" >
 
 
