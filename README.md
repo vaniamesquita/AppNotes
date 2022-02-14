@@ -22,7 +22,7 @@ Esse projeto/desafio foi desenvolvido como parte final do treinamento de React N
 
 <table align="center">
    <tr>
-    <td valign="top"><img src="src/assets/preview.gif" height="500"> </td>
+    <td valign="top"><img src="src/assets/preview.gif" height="800"> </td>
     
    </tr>
  </table>
