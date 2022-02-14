@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {
   Image,
   TouchableOpacity,
@@ -6,14 +6,11 @@ import {
   View,
   StatusBar,
   Text,
-  Alert,
 } from 'react-native';
 
-import {useNavigation, Link} from '@react-navigation/native';
+import {Link} from '@react-navigation/native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-
-const Stack = createNativeStackNavigator();
 
 import Home from '../pages/Home/Home';
 import CriarNota from '../pages/CriarNota/CriarNota';
@@ -22,6 +19,7 @@ import NotaAberta from '../pages/NotaAberta/NotaAberta';
 
 import {deleteAlert} from '../pages/NotaAberta/NotaAberta';
 
+const Stack = createNativeStackNavigator();
 export function AppRoutes() {
   return (
     <NavigationContainer>
@@ -68,7 +66,6 @@ export function AppRoutes() {
           component={CriarNota}
           options={{
             title: 'Criar Nota',
-
             headerRight: () => (
               <View style={styles.containerButtonHeader}>
                 <TouchableOpacity>
@@ -92,7 +89,6 @@ export function AppRoutes() {
           component={Notas}
           options={{
             title: 'Notas',
-
             headerRight: () => (
               <View style={styles.containerButtonHeader}>
                 <TouchableOpacity>
@@ -116,20 +112,11 @@ export function AppRoutes() {
           component={NotaAberta}
           options={{
             title: '',
-            
-
             headerRight: () => (
               <View style={styles.containerButtonHeaderNota}>
-                <TouchableOpacity >
-                  {/* <Image
-                    style={styles.imageButton}
-                    source={require('../../src/assets/Icon/delete/delete.png')}
-                  /> */}
-                </TouchableOpacity>
-
                 <TouchableOpacity onPress={() => console.log('Editar')}>
+                  <Text style={styles.textEditar}>Editar</Text>
                   {/* <Link to={{screen: 'CriarNota'}}>
-                    <Text style={styles.textEditar}>Editar</Text>
                   </Link> */}
                 </TouchableOpacity>
               </View>
@@ -165,10 +152,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   containerButtonHeaderNota: {
-    flexDirection: 'row',
-    flex: 0.4,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginLeft: 20,
+    marginRight: 5,
   },
 });

@@ -5,23 +5,21 @@ import {
   StyleSheet,
   ScrollView,
   Dimensions,
-  FlatList,
   TouchableOpacity,
   Alert,
   Image,
 } from 'react-native';
-import Tags from 'react-native-tags';
-import Notas from '../Notas/Notas';
+
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {NavigationContainer} from '@react-navigation/native';
 import {StackActions} from '@react-navigation/native';
-import {useNavigation, Link} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height * 1.3
+const windowHeight = Dimensions.get('window').height * 1.3;
 
 export default function NotaAberta(props) {
+  const navigation = useNavigation();
   const {nota} = props.route.params;
 
   const deletarNota = async () => {
@@ -33,9 +31,9 @@ export default function NotaAberta(props) {
 
     const newNotes = notes.filter(n => n.id !== nota.id);
     await AsyncStorage.setItem('notas', JSON.stringify(newNotes));
-    //navigation.dispatch(popAction);
     navigation.dispatch(StackActions.popToTop());
   };
+
   const deleteAlert = () => {
     Alert.alert(
       'Alerta',
@@ -55,7 +53,6 @@ export default function NotaAberta(props) {
       },
     );
   };
-  const navigation = useNavigation();
 
   const formatDate = ms => {
     const date = new Date(ms);
@@ -64,85 +61,95 @@ export default function NotaAberta(props) {
     const year = date.getFullYear();
     const hrs = date.getHours();
     const min = date.getMinutes();
-    const sec = date.getSeconds();
 
     return `${day}/${month}/${year} - ${hrs}:${min}`;
   };
 
   return (
-    <ScrollView
-      
-      >
-      <View style={styles.container}>
-        <TouchableOpacity
-          style={styles.containerButtonDelete}
-          onPress={deleteAlert}>
-          <Image source={require('../../assets/Icon/delete/delete.png')} />
-        </TouchableOpacity>
+    <View style={{flex: 1}}>
+      <ScrollView style={{flexGrow: 1}} nestedScrollEnabled={true}>
+        <View style={styles.container}>
+          <TouchableOpacity
+            style={styles.containerButtonDelete}
+            onPress={deleteAlert}>
+            <Image source={require('../../assets/Icon/delete/delete.png')} />
+          </TouchableOpacity>
 
-        {/* <TouchableOpacity onPress={() => console.log('Editar')}>
+          {/* <TouchableOpacity onPress={() => console.log('Editar')}>
             <Link to={{screen: 'CriarNota'}}>
                     <Text style={styles.textEditar}>Editar</Text>
                   </Link>
           </TouchableOpacity> */}
 
-        <View style={styles.containerDados}>
-          <Text style={styles.textoId} numberOfLines={1}>
-            {`Nota Criada em ${formatDate(nota.id)}`}
-          </Text>
+          <View style={styles.containerDados}>
+            <Text style={styles.textoId} numberOfLines={1}>
+              {`Nota Criada em ${formatDate(nota.id)}`}
+            </Text>
 
-          <Text style={styles.textoRotulo}>Nome </Text>
-          <Text style={styles.textoNomeNota}>{nota.nomeNota}</Text>
+            <Text style={styles.textoRotulo}>Nome </Text>
+            <Text style={styles.textoNomeNota}>{nota.nomeNota}</Text>
 
-          <Text style={styles.textoRotulo}>Descrição </Text>
-          <Text style={styles.textoDescricao}>{nota.descricao}</Text>
+            {nota.descricao.length > 0 ? (
+              <View>
+                <Text style={styles.textoRotulo}>Descrição </Text>
+                <Text style={styles.textoDescricao}>{nota.descricao}</Text>
+              </View>
+            ) : null}
 
-          <Text style={styles.textoRotulo}>Prioridade </Text>
-          <Text style={styles.dropbox}>{nota.prioridade}</Text>
+            <View>
+              <Text style={styles.textoRotulo}>Prioridade </Text>
+              <Text style={styles.dropbox}>{nota.prioridade}</Text>
+            </View>
 
-          <Text style={styles.textoRotulo}>Data </Text>
-          <Text style={styles.dropbox}>{nota.data}</Text>
+            {nota.data.length > 0 ? (
+              <View>
+                <Text style={styles.textoRotulo}>Data </Text>
+                <Text style={styles.dropbox}>{nota.data}</Text>
+              </View>
+            ) : null}
 
-          <Text style={styles.textoRotulo}>Tarefas </Text>
-          <View>
-            {nota.itemTarefa.map((item, index) => {
-              return (
-                <View style={styles.containerTarefas} key={index}>
-                  <BouncyCheckbox
-                    iconStyle={{borderRadius: 0}}
-                    size={15}
-                    fillColor="#000"
-                    onPress={isChecked => {}}
-                  />
-                  <Text>{item}</Text>
+            {nota.itemTarefa.length > 0 ? (
+              <View>
+                <Text style={styles.textoRotulo}>Tarefas </Text>
+                <View>
+                  {nota.itemTarefa.map((item, index) => {
+                    return (
+                      <View style={styles.containerTarefas} key={index}>
+                        <BouncyCheckbox
+                          iconStyle={{borderRadius: 0}}
+                          size={15}
+                          fillColor="#000"
+                          onPress={isChecked => {}}
+                        />
+                        <Text>{item}</Text>
+                      </View>
+                    );
+                  })}
                 </View>
-              );
-            })}
-          </View>
+              </View>
+            ) : null}
 
-          <Text style={styles.textoRotulo}>Cor </Text>
-          <Text style={styles.dropbox}>{nota.corTarefa}</Text>
+            <Text style={styles.textoRotulo}>Cor </Text>
+            <Text style={styles.dropbox}>{nota.corTarefa}</Text>
 
-          <Text style={styles.textoRotulo}>Tags </Text>
-          <View>
-            <FlatList
-              data={nota.tag}
-              numColumns={4}
-              
-              // getItemLayout={(data, index) => ({
-              //   length: nota.tag.width,
-              //   offset: nota.tag.width * index,
-              //   index,
-              // })}
-              keyExtractor={item => item}
-              renderItem={({item}) => (
-                <Text style={styles.textoTag}>{item}</Text>
-              )}
-            />
+            {nota.tag.length > 0 ? (
+              <View>
+                <Text style={styles.textoRotulo}>Tags </Text>
+                <View style={styles.containerTag}>
+                  {nota.tag.map((item, index) => {
+                    return (
+                      <View style={styles.containerTextTag} key={index}>
+                        <Text style={styles.textoTag}>{item}</Text>
+                      </View>
+                    );
+                  })}
+                </View>
+              </View>
+            ) : null}
           </View>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }
 
@@ -193,6 +200,15 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     flexDirection: 'row',
   },
+  containerTag: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 5,
+  },
+  containerTextTag: {
+    marginRight: 10,
+    marginBottom: 10,
+  },
   textoTag: {
     marginTop: 3,
 
@@ -206,7 +222,6 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     flexDirection: 'row',
     flexWrap: 'wrap',
-    
   },
   containerTarefas: {
     flexDirection: 'row',

@@ -1,5 +1,3 @@
-//CRIAR NOTA
-
 /* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
 import {
@@ -11,8 +9,6 @@ import {
   TextInput,
   Keyboard,
   Alert,
-  FlatList,
-  KeyboardAvoidingView,
 } from 'react-native';
 
 import {StackActions} from '@react-navigation/native';
@@ -23,10 +19,10 @@ import Tarefa from '../../Components/Tarefa';
 import Tags from 'react-native-tags';
 import DropDownPicker from 'react-native-dropdown-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import MaskInput, {Masks} from 'react-native-mask-input';
 
 export default function CriarNota() {
   const navigation = useNavigation();
-  const popAction = StackActions.pop(1);
 
   const [nomeNota, setNomeNota] = useState('');
   const [descricao, setDescricao] = useState('');
@@ -142,7 +138,6 @@ export default function CriarNota() {
           <Text style={{marginBottom: 500}}>
             <View>
               {/* ==================== INPUT - NOME DA NOTA ==================== */}
-
               <Text style={styles.inputLabel}>Nome da Nota (obrigatório)</Text>
               <TextInput
                 returnKeyType={'next'}
@@ -197,10 +192,11 @@ export default function CriarNota() {
 
               {/* ========== INPUT - DATA ========== */}
               <Text style={styles.inputLabel}>Data</Text>
-              <TextInput
+              <MaskInput
                 style={styles.input}
-                onChangeText={text => setData(text)}
+                onChangeText={setData}
                 value={data}
+                mask={Masks.DATE_DDMMYYYY}
                 placeholder="dd/mm/yyyy"
                 keyboardType="numeric"
               />
@@ -238,7 +234,7 @@ export default function CriarNota() {
               </View>
 
               {/* ========== FILE PICKER - ADICIONAR FOTO OU ARQUIVO ========== */}
-              <View>
+              {/* <View>
                 <Text style={styles.inputLabel}>Adicionar foto ou arquivo</Text>
                 <Text
                   style={{
@@ -253,7 +249,7 @@ export default function CriarNota() {
                 <TouchableOpacity style={styles.buttonAddFile}>
                   <Text style={styles.textButtonAddFile}>Adicione Aqui</Text>
                 </TouchableOpacity>
-              </View>
+              </View> */}
 
               {/* ========== DROPDOWN - COR TAREFA ========== */}
 
@@ -314,13 +310,7 @@ export default function CriarNota() {
                   }}
                   tagTextStyle={{backgroundColor: 'black', borderRadius: 50}}
                   inputStyle={{backgroundColor: 'white'}}
-                  renderTag={({
-                    tag,
-                    index,
-                    onPress,
-                    deleteTagOnPress,
-                    readonly,
-                  }) => (
+                  renderTag={({tag, index, onPress}) => (
                     <TouchableOpacity
                       key={`${tag}-${index}`}
                       onPress={onPress}
@@ -339,8 +329,10 @@ export default function CriarNota() {
       <View style={{flex: 0.1}}>
         <View style={styles.container}>
           {nomeNota.trim().length > 0 ? (
-            <TouchableOpacity style={styles.button} onPress={storeData}>
-              <Text style={styles.buttonText}>Criar Nota</Text>
+            <TouchableOpacity
+              style={styles.buttonCriarNota}
+              onPress={storeData}>
+              <Text style={styles.buttonTextCriarNota}>Criar Nota</Text>
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
@@ -348,7 +340,7 @@ export default function CriarNota() {
               onPress={() => {
                 Alert.alert('Atenção', 'O nome da nota é obrigatório');
               }}>
-              <Text style={styles.buttonText}>Criar Nota</Text>
+              <Text style={styles.buttonTextCriarNota}>Criar Nota</Text>
             </TouchableOpacity>
           )}
         </View>
@@ -381,7 +373,7 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     lineHeight: 16,
   },
-  button: {
+  buttonCriarNota: {
     backgroundColor: '#0F62FE',
     width: '100%',
     margin: 0,
@@ -396,14 +388,12 @@ const styles = StyleSheet.create({
     width: '100%',
     margin: 0,
     height: 100,
-
     justifyContent: 'center',
     alignItems: 'center',
-
     position: 'absolute',
     bottom: 0,
   },
-  buttonText: {
+  buttonTextCriarNota: {
     color: '#fff',
     fontSize: 16,
     lineHeight: 18,
@@ -512,13 +502,10 @@ const styles = StyleSheet.create({
   textoTag: {
     marginTop: 2,
     marginBottom: 2,
-
     marginLeft: 5,
     paddingVertical: 5,
     paddingHorizontal: 10,
-
     backgroundColor: '#e0e0e0',
-
     borderRadius: 50,
   },
 });

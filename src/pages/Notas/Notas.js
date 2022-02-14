@@ -11,10 +11,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import moment from 'moment';
 
-//deletar nota
-async function deletarNota() {
-  await AsyncStorage.clear();
-}
+// //deletar nota
+// async function deletarNota() {
+//   await AsyncStorage.clear();
+// }
 
 const windowWidth = Dimensions.get('window').width - 40;
 const windowHeight = Dimensions.get('window').height * 1.3;
@@ -38,28 +38,25 @@ export default ({item, onPress}) => {
     const year = date.getFullYear();
     const hrs = date.getHours();
     const min = date.getMinutes();
-    const sec = date.getSeconds();
 
     return `${day}/${month}/${year} - ${hrs}:${min}`;
   };
 
-  // let corFundo = if (corTarefa == "Rosa") {
-  //   "#fff3f3"
-  // } if (corTarefa == "Azul"){
-  //   "EAf1ff"
-  // } if( corTarefa == "Verde-Água") {
-  //   "#E4FFEF"
-  // } else {
-  //   "#f8f8f8"
-  // }
-
   return (
-    <View>
-      <ScrollView horizontal={true}>
+    <View style={{flex: 1}}>
+      <ScrollView style={{flexGrow: 1}} nestedScrollEnabled={true}>
         <TouchableOpacity onPress={onPress}>
-          {/* onPress={onPress} para abrir a pagina NotaAberta. Incluir nas propriedades tb lá em cima */}
-          {/* =========== AJUSTAR SCROLLVIEW =========== */}
-          <View style={styles.container}>
+          <View
+            //eslint-disable-next-line react-native/no-inline-styles
+            style={{
+              borderRadius: 4,
+              backgroundColor: corTarefa === 'Azul' ? '#eaf1ff' : '#f8f8f8',
+              borderColor: '#f2f2f2',
+              borderWidth: 1,
+              padding: 10,
+              flexWrap: 'wrap',
+              width: windowWidth / 2,
+            }}>
             <View>
               <Text style={styles.textoId} numberOfLines={1}>
                 {formatDate(id)}
@@ -85,13 +82,8 @@ export default ({item, onPress}) => {
                   </View>
                 );
               })}
-
               {/* <Text numberOfLines={1}>{corTarefa}</Text> */}
-              {/* <Text style={styles.tag}  numberOfLines={2}>{tag.length > 0 ? tag : null}</Text> */}
-
-              {/* <TouchableOpacity onPress={deletarNota}>
-              <Text>Deletar</Text>
-            </TouchableOpacity> */}
+              {/* <Text style={styles.tag}  numberOfLines={2}>{tag}</Text> */}
             </View>
           </View>
         </TouchableOpacity>
@@ -104,25 +96,11 @@ const styles = StyleSheet.create({
   container: {
     borderRadius: 4,
     backgroundColor: '#f8f8f8',
-    //backgroundColor: corTarefa == "Rosa" ? "#fff3f3" : "#f8f8f8",
-
     borderColor: '#f2f2f2',
     borderWidth: 1,
-    justifyContent: 'space-between',
-    alignSelf: 'center',
-    alignItems: 'center',
-    paddingLeft: 10,
-    paddingRight: 10,
-    paddingTop: 20,
-    paddingBottom: 20,
-    marginRight: 10,
+    padding: 10,
     flexWrap: 'wrap',
-    flexGrow: 1,
-    flexShrink: 1,
-    flexDirection: 'row',
-
     width: windowWidth / 2,
-    // height: windowHeight/10
   },
   textNome: {
     fontWeight: 'bold',
@@ -152,5 +130,17 @@ const styles = StyleSheet.create({
     fontSize: 10,
     textAlignVertical: 'center',
     marginLeft: -8,
+  },
+  Rosa: {
+    backgroundColor: '#fff3f3',
+  },
+  Azul: {
+    backgroundColor: '#eaf1ff',
+  },
+  Basico: {
+    backgroundColor: '#f8f8f8',
+  },
+  verde: {
+    backgroundColor: '#e4ffef',
   },
 });

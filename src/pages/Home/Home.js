@@ -6,37 +6,24 @@ import {
   TouchableOpacity,
   Image,
   FlatList,
-  Dimensions,
 } from 'react-native';
-import {useNavigation, useIsFocused, Link} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {useNavigation, useIsFocused} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Notas from '../Notas/Notas';
-import NotaAberta from '../NotaAberta/NotaAberta';
-
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
-
-const Stack = createNativeStackNavigator();
 
 export default function Home() {
   const navigation = useNavigation();
 
-
-
-  
-
   //renderizar notas =======================
   const [notes, setNotes] = useState([]);
   const isFocused = useIsFocused();
- 
+
   // renderizar notas e atualizar pagina ao voltar
   useEffect(() => {
     findNotes();
   }, [notes, isFocused]);
 
-  
   // buscar notas ===========================
 
   const findNotes = async () => {
@@ -47,11 +34,9 @@ export default function Home() {
   };
 
   //ver detalhes da nota (abrir nota)
-
   const openNote = nota => {
     navigation.navigate('NotaAberta', {nota});
   };
-
 
   return (
     <View style={styles.container}>
@@ -79,9 +64,7 @@ export default function Home() {
           columnWrapperStyle={{marginBottom: 15}}
           keyExtractor={item => item.id.toString()}
           renderItem={({item}) => (
-          
-          <Notas onPress={() => openNote(item)} item={item} />
-          
+            <Notas onPress={() => openNote(item)} item={item} />
           )}
         />
       )}
@@ -91,8 +74,7 @@ export default function Home() {
 
 const styles = StyleSheet.create({
   container: {
-    width: windowHeight,
-    height: windowHeight,
+    flex: 1,
     paddingTop: 20,
     paddingLeft: 15,
     backgroundColor: 'white',
@@ -113,8 +95,7 @@ const styles = StyleSheet.create({
   },
   iconeAddNota: {
     position: 'absolute',
-    bottom: 200,
+    bottom: 100,
     left: 300,
-    
   },
 });
