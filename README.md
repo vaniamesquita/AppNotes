@@ -24,7 +24,7 @@ Layout do projeto a ser feito (figma)
 
 <table align="center">
    <tr>
-    <td valign="top"><img src="src/assets/preview.gif" height="800"> </td>
+    <td valign="top"><img src="src/assets/preview.gif" height="810"> </td>
     
    </tr>
  </table>
